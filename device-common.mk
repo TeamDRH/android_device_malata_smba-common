@@ -75,10 +75,6 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
    device/malata/smba-common/prebuilt/vold.fstab:system/etc/vold.fstab
 
-# Bootanimation
-PRODUCT_COPY_FILES += \
-   device/malata/smba-common/prebuilt/bootanimation.zip:system/media/bootanimation.zip
-
 PRODUCT_PROPERTY_OVERRIDES += \
     BUILD_UTC_DATE=0 \
     wifi.interface=wlan0 \

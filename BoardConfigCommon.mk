@@ -65,6 +65,8 @@ BOARD_FLASH_BLOCK_SIZE := 131072
 
 TARGET_USERIMAGES_USE_EXT4 := true
 
-BOARD_UMS_LUNFILE := "/sys/devices/platform/fsl-tegra-udc/gadget/lun0/file"
+#BOARD_UMS_LUNFILE               := "/sys/devices/platform/fsl-tegra-udc/gadget/lun0/file"
 TARGET_USE_CUSTOM_LUN_FILE_PATH := "/sys/devices/platform/fsl-tegra-udc/gadget/lun0/file"
-BOARD_SDCARD_INTERNAL_DEVICE := /dev/block/mmcblk0p7
+BOARD_SDCARD_INTERNAL_DEVICE    := /dev/block/mmcblk0p7
+
+TARGET_OTA_ASSERT_SKIP := true
