@@ -124,9 +124,9 @@
         <item>7</item>
     </integer-array>
 
-    <string name="config_networkLocationProvider">com.google.android.location.NetworkLocationProvider</string>
+    <string name="config_networkLocationProviderPackageName">com.google.android.location.NetworkLocationProvider</string>
 
-   <string name="config_geocodeProvider">com.google.android.location.GeocodeProvider</string>
+   <string name="config_geocodeProviderPackageName">com.google.android.location.GeocodeProvider</string>
     <!-- XXXXX NOTE THE FOLLOWING RESOURCES USE THE WRONG NAMING CONVENTION.
          Please don't copy them, copy anything else. -->
 
