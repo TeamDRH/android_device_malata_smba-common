@@ -9,8 +9,12 @@
 /sys/dock               0660    system  system
 /dev/ttyACM*            0660    radio   system
 /dev/ttyHS*             0660    radio   system
-/dev/tegra_dc*          0660    system system
-/dev/kmsg		0662	root	log
+/dev/ttyUSB*            0660    radio   system
+/dev/tegra_dc*          0660    system  system
+/dev/kmsg               0662    root    log
+/dev/nvhdcp0            0666    system  system
+/dev/nvhdcp1            0666    system  system
+/dev/rfkill             0666    wifi    wifi
 /sys/devices/platform/bcm4329_rfkill/rfkill/rfkill*		state	0666	radio	system
 /sys/devices/platform/tegra_uart.2/tty/ttyHS2/hci0/rfkill*	state	0666	radio	system
 

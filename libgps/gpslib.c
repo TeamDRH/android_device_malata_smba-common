@@ -29,12 +29,12 @@
 #define NMEA_MAXSATS	12
 
 #if GPS_DEBUG
-#define LOGV(...) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)
+#define ALOGV(...) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)
 #else
-#define LOGV(...) ((void)0)
+#define ALOGV(...) ((void)0)
 #endif
 
-#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
+#define ALOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
 
 static GpsInterface adamGpsInterface;
 static GpsCallbacks *adamGpsCallbacks;
@@ -103,7 +103,7 @@ updateNMEA(void *arg)
 	nmeaArgs *Args = (nmeaArgs *) arg;
 	GpsUtcTime time = Args->time;
 	char *NMEA2 = Args->NMEA;
-	//LOGV("Debug GPS: %s", NMEA2);
+	//ALOGV("Debug GPS: %s", NMEA2);
 	if (adamGpsCallbacks != NULL) {
 		adamGpsCallbacks->nmea_cb(time, NMEA2, strlen(NMEA2));
 	}
@@ -122,7 +122,7 @@ updateRMC(void *arg)
 	GpsLocation newLoc;
 
 	if (info->sig == 0) {
-		LOGV("No valid fix data.");
+		ALOGV("No valid fix data.");
 		goto endRMC;
 	}
 
@@ -131,7 +131,7 @@ updateRMC(void *arg)
 	newLoc.latitude = convertCoord(info->lat);
 	newLoc.longitude = convertCoord(info->lon);
 	newLoc.timestamp = getUTCTime(&(info->utc));
-	LOGV("Lat: %lf Long: %lf", newLoc.latitude, newLoc.longitude);
+	ALOGV("Lat: %lf Long: %lf", newLoc.latitude, newLoc.longitude);
 	if (adamGpsCallbacks != NULL) {
 		adamGpsCallbacks->location_cb(&newLoc);
 	}
@@ -154,7 +154,7 @@ updateGSA(void *arg)
 	useMask = 0;
 	for (count = 0; count < NMEA_MAXSATS; count++) {
 		if (pack->sat_prn[count] != 0) {
-			LOGV("%i is in use", pack->sat_prn[count]);
+			ALOGV("%i is in use", pack->sat_prn[count]);
 			useMask |= (1 << (pack->sat_prn[count] - 1));
 		}
 	}
@@ -177,7 +177,7 @@ updateGGA(void *arg)
 
 	gpsStat.size = sizeof (gpsStat);
 	if (info->sig == 0) {
-		LOGV("No valid fix data.");
+		ALOGV("No valid fix data.");
 		goto endGGA;
 	}
 
@@ -188,7 +188,7 @@ updateGGA(void *arg)
 	newLoc.latitude = convertCoord(info->lat);
 	newLoc.longitude = convertCoord(info->lon);
 	newLoc.timestamp = getUTCTime(&(info->utc));
-	LOGV("Lat: %lf Long: %lf", newLoc.latitude, newLoc.longitude);
+	ALOGV("Lat: %lf Long: %lf", newLoc.latitude, newLoc.longitude);
 	if (adamGpsCallbacks != NULL) {
 		adamGpsCallbacks->location_cb(&newLoc);
 	}
@@ -213,7 +213,7 @@ updateGSV(void *arg)
 	int numMessages = NMEA2[7] - 48;
 	int msgNumber = NMEA2[9] - 48;
 
-	//LOGV("Updating %i sats: msg %i/%i", num, numMessages, msgNumber);
+	//ALOGV("Updating %i sats: msg %i/%i", num, numMessages, msgNumber);
 
 	switch (msgNumber) {
 
@@ -263,7 +263,7 @@ updateGSV(void *arg)
 		svStatus->sv_list[count].snr = sats.sat[count].sig;
 		svStatus->sv_list[count].elevation = sats.sat[count].elv;
 		svStatus->sv_list[count].azimuth = sats.sat[count].azimuth;
-		//LOGV("ID: %i; SIG: %i; ELE: %i; AZI: %i", sats.sat[count].id, sats.sat[count].sig, sats.sat[count].elv, sats.sat[count].azimuth);
+		//ALOGV("ID: %i; SIG: %i; ELE: %i; AZI: %i", sats.sat[count].id, sats.sat[count].sig, sats.sat[count].elv, sats.sat[count].azimuth);
 	}
 
 	switch (numMessages) {
@@ -274,10 +274,10 @@ updateGSV(void *arg)
 	case 2:
 		if (svMask == (MASK_GSV_MSG1 | MASK_GSV_MSG2)) {
 			// We've got both messages
-			//LOGV("Delivering 2: %i, %i", svMask, (MASK_GSV_MSG1 | MASK_GSV_MSG2));
+			//ALOGV("Delivering 2: %i, %i", svMask, (MASK_GSV_MSG1 | MASK_GSV_MSG2));
 			goto deliverMsg;
 		} else {
-			//LOGV("Debug 2: %i, %i", svMask, (MASK_GSV_MSG1 | MASK_GSV_MSG2));
+			//ALOGV("Debug 2: %i, %i", svMask, (MASK_GSV_MSG1 | MASK_GSV_MSG2));
 			// Store for next run
 			storeSV = svStatus;
 			goto gsvEnd;
@@ -285,17 +285,17 @@ updateGSV(void *arg)
 		break;
 	case 3:
 		if (svMask == ((MASK_GSV_MSG1 | MASK_GSV_MSG2) | MASK_GSV_MSG3)) {
-			//LOGV("Delivering 3: %i, %i", svMask, ((MASK_GSV_MSG1 | MASK_GSV_MSG2) | MASK_GSV_MSG3));
+			//ALOGV("Delivering 3: %i, %i", svMask, ((MASK_GSV_MSG1 | MASK_GSV_MSG2) | MASK_GSV_MSG3));
 			goto deliverMsg;
 		} else {
-			//LOGV("Debug 2: %i, %i",svMask, ((MASK_GSV_MSG1 | MASK_GSV_MSG2) | MASK_GSV_MSG3));
+			//ALOGV("Debug 2: %i, %i",svMask, ((MASK_GSV_MSG1 | MASK_GSV_MSG2) | MASK_GSV_MSG3));
 			storeSV = svStatus;
 			goto gsvEnd;
 		}
 		break;
 	default:
 		// Huh?
-		LOGE("Logic error in GSV! numMessages: %i", numMessages);
+		ALOGE("Logic error in GSV! numMessages: %i", numMessages);
 		goto gsvEnd;
 	}
 
@@ -312,7 +312,7 @@ deliverMsg:
 	if (adamGpsCallbacks != NULL) {
 		adamGpsCallbacks->sv_status_cb(svStatus);
 	}
-	//LOGV("Pushing data");
+	//ALOGV("Pushing data");
 	free(svStatus);
 	storeSV = NULL;
 	svMask = 0;
@@ -394,7 +394,7 @@ processNMEA()
 		break;
 	}
 
-	//LOGV("Successful read: %i", info->smask);     
+	//ALOGV("Successful read: %i", info->smask);     
 }
 
 static void *
@@ -411,7 +411,7 @@ doGPS(void *arg)
 	// Open the GPS port
 	gpsTTY = fopen(GPS_TTYPORT, "r");
 	if (gpsTTY == NULL) {
-		LOGE("Failed opening TTY port: %s", GPS_TTYPORT);
+		ALOGE("Failed opening TTY port: %s", GPS_TTYPORT);
 		return NULL;
 	}
 	// Obtain mutex lock and check if we're good to go
@@ -422,7 +422,7 @@ doGPS(void *arg)
 	while (go) {
 		buffer = fgets(NMEA, MAX_NMEA_CHARS, gpsTTY);
 		if (buffer == NULL) {
-			LOGV("NMEA data read fail, sleeping for 1 sec.");
+			ALOGV("NMEA data read fail, sleeping for 1 sec.");
 			nanosleep(&slp, NULL);
 		}
 		if (NMEA[0] == '$') {
@@ -448,7 +448,7 @@ gps_power(int onoff)
 	case 1: if (gps_pfd != -1) write(gps_pfd, "1", 1);
 		break;
 	default:
-		LOGE("gps_power: error: given unknown onoff value %d.", onoff);
+		ALOGE("gps_power: error: given unknown onoff value %d.", onoff);
 		break;
 	}
 }
@@ -461,7 +461,7 @@ static int
 gpslib_init(GpsCallbacks * callbacks)
 {
 	int ret = 0;
-	LOGV("Callbacks set");
+	ALOGV("Callbacks set");
 	adamGpsCallbacks = callbacks;
 	adamGpsCallbacks->set_capabilities_cb(0);
 	GpsStatus *status = malloc(sizeof (GpsStatus));
@@ -469,7 +469,7 @@ gpslib_init(GpsCallbacks * callbacks)
 	struct stat st;
 	if (stat(GPS_TTYPORT, &st) != 0) {
 		ret = -1;
-		LOGE("Specified tty port: %s does not exist", GPS_TTYPORT);
+		ALOGE("Specified tty port: %s does not exist", GPS_TTYPORT);
 		goto end;
 	}
 
@@ -477,7 +477,7 @@ gpslib_init(GpsCallbacks * callbacks)
 		gps_pfd = open(GPS_POWER_CTRL, O_WRONLY);
 		if (gps_pfd == -1) {
 			ret = -1;
-			LOGE("Power control: open failed: %s. GPS will not be activated.", GPS_POWER_CTRL);
+			ALOGE("Power control: open failed: %s. GPS will not be activated.", GPS_POWER_CTRL);
 			status->size = sizeof (GpsStatus);
 			status->status = GPS_STATUS_ENGINE_OFF;
 			adamGpsCallbacks->create_thread_cb("adamgps-status", updateStatus, status);
@@ -495,7 +495,7 @@ end:
 static int
 gpslib_start()
 {
-	LOGV("Gps start");
+	ALOGV("Gps start");
 	GpsStatus *stat = malloc(sizeof (GpsStatus));
 	stat->size = sizeof (GpsStatus);
 	stat->status = GPS_STATUS_SESSION_BEGIN;
@@ -511,7 +511,7 @@ gpslib_start()
 static int
 gpslib_stop()
 {
-	LOGV("GPS stop");
+	ALOGV("GPS stop");
 	GpsStatus *stat = malloc(sizeof (GpsStatus));
 	stat->size = sizeof (GpsStatus);
 	stat->status = GPS_STATUS_SESSION_END;
@@ -536,21 +536,21 @@ gpslib_cleanup()
 	}
 */
 	adamGpsCallbacks->create_thread_cb("adamgps-status", updateStatus, stat);
-	LOGV("GPS clean");
+	ALOGV("GPS clean");
 	return;
 }
 
 static int
 gpslib_inject_time(GpsUtcTime time, int64_t timeReference, int uncertainty)
 {
-	LOGV("GPS inject time");
+	ALOGV("GPS inject time");
 	return 0;
 }
 
 static int
 gpslib_inject_location(double latitude, double longitude, float accuracy)
 {
-	LOGV("GPS inject location");
+	ALOGV("GPS inject location");
 	return 0;
 }
 
@@ -575,7 +575,7 @@ gpslib_get_extension(const char *name)
 const GpsInterface *
 gps__get_gps_interface(struct gps_device_t *dev)
 {
-	LOGV("Gps get_interface");
+	ALOGV("Gps get_interface");
 	adamGpsInterface.size = sizeof (GpsInterface);
 	adamGpsInterface.init = gpslib_init;
 	adamGpsInterface.start = gpslib_start;
