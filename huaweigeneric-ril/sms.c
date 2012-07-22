@@ -10,6 +10,9 @@
 #ifndef nodroid
 #define LOG_TAG "SMS_RIL"
 #include <utils/Log.h>
+#define LOGD ALOGD
+#define LOGI ALOGI
+#define LOGE ALOGE
 #else
 #define LOGD printf
 #define LOGE printf
